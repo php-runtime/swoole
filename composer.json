@@ -16,7 +16,9 @@
         "swoole/ide-helper": "^4.6",
         "symfony/http-foundation": "^4.4 || ^5.2",
         "symfony/http-kernel": "^4.4 || ^5.2",
-        "symfony/phpunit-bridge": "^5.2"
+        "symfony/phpunit-bridge": "^5.2",
+        "illuminate/contracts": "^8.46",
+        "illuminate/http": "^8.46"
     },
     "autoload": {
         "psr-4": {
