@@ -5,7 +5,6 @@ namespace Runtime\Swoole;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -21,18 +20,20 @@ final class SymfonyHttpBridge
 {
     public static function convertSwooleRequest(Request $request): SymfonyRequest
     {
-        $sfRequest = new SymfonyRequest(
+        $server = array_change_key_case($request->server ?? [], CASE_UPPER);
+        foreach ($request->header as $key => $value) {
+            $server['HTTP_' . strtoupper($key)] = $value;
+        }
+
+        return new SymfonyRequest(
             $request->get ?? [],
             $request->post ?? [],
             [],
             $request->cookie ?? [],
             $request->files ?? [],
-            array_change_key_case($request->server ?? [], CASE_UPPER),
+            $server,
             $request->rawContent()
         );
-        $sfRequest->headers = new HeaderBag($request->header ?? []);
-
-        return $sfRequest;
     }
 
     public static function reflectSymfonyResponse(SymfonyResponse $sfResponse, Response $response): void
